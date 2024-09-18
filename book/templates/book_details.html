@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block body %}
+
+<div class="col-sm-12">  
+  <div class="d-flex flex-wrap p-2">
+  
+    <div class="card mx-2 d-flex flex-row"> <!-- Added d-flex flex-row to make image and card-body side by side -->
+        
+      {% if book.image %}
+        <img class="card-img-left" src="{{ book.image.url }}" alt="Card image cap" style="width:50%;"> <!-- Adjust width as needed -->
+      {% else %}
+        <img class="card-img-left" src="{% static 'images/placeholder.jpg' %}" alt="No image available" style="width:50%;"> <!-- Adjust width as needed -->
+      {% endif %}
+        
+      <div class="card-body p-2 flex-grow-1"> <!-- Added flex-grow-1 to make the card-body fill the remaining space -->
+        <h5 class="card-title">
+          <p class="text-decoration-none text-dark">Name: {{book.book_name }}</p>
+        </h5>
+        <h5 class="card-text">Total Bokks: {{ book.quantity }}</h5><br>
+        <h5 class="card-text">Price: {{ book.price }}</h5><br>
+        <h5 class="card-text">About book: </h5>
+         <p> {{ book.description }}</p><br>
+        <h5>Catagory:
+         
+            <button class="btn btn-primary m-2" disabled>{{book.catagory.name }}</button><br>
+         
+        </h5><br>
+        
+        {% if request.user.is_authenticated %}
+          <div class="d-flex justify-content-center">
+            {% if book.quantity > 0 %}
+              <a class="btn btn-danger text-dark m-5" href="{% url 'borrow_book' book.id %}">BORROW BOOK</a>
+            {% else %}
+              <p class="btn btn-danger text-dark m-5">Out of stock</p>
+            {% endif %}
+          </div>
+        {% endif %}
+        
+      </div>
+      
+    </div>
+    
+  </div>
+</div>
+
+<div class="card m-2">
+  <h5 class="p-3">Total Reviwe: {{ comments | length }}</h5>
+  {% for comment in comments %}
+    <div class="card-body border m-2">
+      <p><b>{{ comment.name }}</b> {{ comment.created_on }}</p>
+      <p>{{ comment.body }}</p>
+    </div>
+  {% endfor %}
+</div>
+
+
+ <div class="card m-2">
+  <div class="card-body">
+    <form method="post">
+      <h1>Review</h1>
+      {% csrf_token %}
+      {{ comment_form | crispy }}
+      <button class="btn btn-warning">Submit</button>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %} 

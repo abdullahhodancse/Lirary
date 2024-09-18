@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="d-flex flex-wrap p-3">
+  <div class="col-6">
+  <h1>Welcome To Public Library</h1>
+  
+  <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
+  </div>
+   <div class="col-6">
+    <img style="width:70%;" src="{% static 'book.jpg' %}" alt="Image description">
+
+
+  </div>
+  
+</div>  
+
+
+<div class='d-flex flex-wrap p-4'>
+  <div class="d-flex flex-wrap p-3">
+    <b>All Catagories:</b>
+    {% for bra in catagory %}
+    <div class="form-check">
+      
+      <label class="form-check-label" for="{{ bra.name }}">
+        <a href="{% url 'catagory_wise_book' bra.slug %}" button class="btn btn-primary m-2" disable>{{ bra.name }}</a>
+      </label>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <div class="col-10 p-3">
+    <h3>{{ data|length }} Result Is Found</h3>
+    <div class="d-flex flex-wrap">
+      {% for book in data %}
+      <div class="col-sm-3">
+        <div class="card mx-2">
+          
+          {% if book.image %}
+            <img class="card-img-top" src="{{ book.image.url }}" alt="Card image cap">
+          {% else %}
+            <img class="card-img-top" src="{% static 'images/placeholder.jpg' %}" alt="No image available">
+          {% endif %}
+          
+          <div class="card-body">
+            <h5 class="card-title">
+              <p class="text-decoration-none text-dark">Name: {{ book.book_name }}</p>
+            </h5>
+            <p class="card-text">Total Books: {{ book.quantity  }}</p><br>
+            <p class="card-text">Price: {{ book.price }}</p><br>
+            <p class="card-text">About Book: {{ book.description | truncatewords:2 }}</p><br>
+            <u>Catagory:</u>
+             
+                <button class="btn btn-primary m-2" disable>{{ book.catagory.name }}</button>
+              
+              
+            </small><br>
+            {%if request.user.is_authenticated%}
+            <a class="nav-link btn btn-info text-dark" href="{%url 'details_book' book.id%}">View Details</a>
+            {%endif%}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div> 
+</div>
+{% endblock %}
